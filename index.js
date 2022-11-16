@@ -71,6 +71,7 @@ class Controller {
 
     this.model.clear('x', 'y', 'operator');
     this.model.store('x', result);
+    this.model.store('result', result);
 
     this.model.store('displayValue', this.model.x);
     this.onDisplayValueChanged();
@@ -96,6 +97,9 @@ class Controller {
   handleNumbers = (e) => {
     const { value } = e.target;
     if (!this.model.operator) {
+      if (this.model.result) {
+        this.model.clear('x', 'result');
+      }
       this.model.store('x', value);
       this.model.store('displayValue', this.model.x);
     } else {
@@ -148,6 +152,7 @@ class Model {
     this.x = '';
     this.y = '';
     this.operator = '';
+    this.result = '';
     this.displayValue = '';
   }
 
