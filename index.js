@@ -18,17 +18,17 @@ class View {
   }
 
   updateDisplay(value) {
-    const displayWidth = 384;
-    const totalDigit = Math.ceil((displayWidth * 1.2) / this.fontSize);
+    value = this.separateThousands(value);
 
-    if (value) {
-      value = this.separateThousands(value);
-      if (value.length > totalDigit) {
-        this.fontSize = Math.ceil(this.fontSize / 1.2);
-        this.setFontSize(this.fontSize);
-      }
+    const displayWidth = 384;
+    const totalDigit = (displayWidth * 1.1) / this.fontSize;
+
+    if (value.length > totalDigit) {
+      this.fontSize = this.fontSize / 1.1;
+      this.setFontSize(this.fontSize);
     } else {
       this.fontSize = 64;
+      this.setFontSize(this.fontSize);
     }
     this.display.textContent = value;
   }
@@ -60,7 +60,7 @@ class Controller {
 
   handleClear = () => {
     this.model = new Model();
-    this.updateDisplay();
+    this.updateDisplay('');
   };
 
   handleCalculate = () => {
