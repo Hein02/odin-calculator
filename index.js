@@ -84,7 +84,7 @@ function copyMethods(to, from) {
 
 copyProps(calculator, data);
 copyProps(calculator, view);
-
+console.log(calculator);
 function checkIsInt(value) {
   return Number.isInteger(parseInt(value));
 }
@@ -104,14 +104,14 @@ function handleClick(e) {
     calculator.storeOperator(value);
 
     calculator.clear('cache');
-  }
-
-  if (calculator.x && calculator.y && calculator.operator) {
-    const x = makeInt(calculator.x);
-    const y = makeInt(calculator.y);
-    calculator.result = calculator.operate(x, y, calculator.operator);
-    calculator.clear('x', 'y', 'operator');
-    calculator.storeNum(calculator.result);
+  } else {
+    if (calculator.x && calculator.y && calculator.operator) {
+      const x = makeInt(calculator.x);
+      const y = makeInt(calculator.y);
+      calculator.result = calculator.operate(x, y, calculator.operator);
+      calculator.clear('x', 'y', 'operator');
+      calculator.storeNum(calculator.result);
+    }
   }
 
   if (calculator.result) {
