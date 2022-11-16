@@ -47,52 +47,61 @@ class Controller {
     this.view.bindHandleNumbers(this.handleNumbers);
   }
 
-  handleClear = (e) => {
+  handleClear = () => {
     this.model = new Model();
-
-    this.view.updateDisplay(this.model.displayValue);
-    console.table(this.model);
+    this.onDisplayValueChanged();
   };
 
-  handleCalculate = (e) => {
-    if (!this.model.x || !this.model.y || !this.model.operator) {
+  handleCalculate = () => {
+    let { x, y, operator } = this.model;
+    if (!x || !y || !operator) {
       return;
     }
-    const x = this.makeInt(this.model.x);
-    const y = this.makeInt(this.model.y);
-    this.model.result = this.model.calculate(x, y, this.model.operator);
-    this.model.clear('x', 'y', 'operator');
-    this.model.storeNumber('x', this.model.result);
+    x = this.makeInt(x);
+    y = this.makeInt(y);
+    const result = this.model.calculate(x, y, operator);
 
-    this.model.storeDisplayValue(this.model.result);
-    this.view.updateDisplay(this.model.displayValue);
+    this.model.clear('x', 'y', 'operator');
+    this.model.store('x', result);
+
+    this.model.store('displayValue', this.model.x);
+    this.onDisplayValueChanged();
+
     console.table(this.model);
   };
 
   handleOperators = (e) => {
-    if (this.model.x || this.model.y || this.model.operator) {
+    const { value } = e.target;
+    let { x, y, operator } = this.model;
+    if (x || y || operator) {
       this.handleCalculate();
     } else {
       this.model.clear('displayValue');
-      this.view.updateDisplay(this.model.displayValue);
+      this.onDisplayValueChanged();
     }
 
-    this.model.storeOperator(e.target.value);
+    this.model.store('operator', value);
 
     console.table(this.model);
   };
 
   handleNumbers = (e) => {
+    const { value } = e.target;
     if (!this.model.operator) {
-      this.model.storeNumber('x', e.target.value);
+      this.model.store('x', value);
     } else {
-      this.model.storeNumber('y', e.target.value);
+      this.model.store('y', value);
     }
 
-    this.model.storeDisplayValue(this.model.x);
-    this.view.updateDisplay(this.model.displayValue);
+    this.model.store('displayValue', this.model.x);
+
+    this.onDisplayValueChanged();
     console.table(this.model);
   };
+
+  onDisplayValueChanged() {
+    this.view.updateDisplay(this.model.displayValue);
+  }
 
   checkIsInt(value) {
     return Number.isInteger(parseInt(value));
@@ -108,7 +117,6 @@ class Model {
     this.x = '';
     this.y = '';
     this.operator = '';
-    this.result = '';
     this.displayValue = '';
   }
 
@@ -132,16 +140,12 @@ class Model {
     return this[operator](x, y).toFixed(2);
   }
 
-  storeNumber(name, value) {
-    this[name] += value;
-  }
-
-  storeOperator(operator) {
-    this.operator = operator;
-  }
-
-  storeDisplayValue(displayValue) {
-    this.displayValue = displayValue;
+  store(key, value) {
+    if (key === 'x' || key === 'y') {
+      this[key] += value;
+    } else {
+      this[key] = value;
+    }
   }
 
   clear(...args) {
