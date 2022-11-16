@@ -5,7 +5,7 @@ class View {
     this.clear = document.querySelector('.js-clear');
     this.calculate = document.querySelector('.js-calculate');
     this.operators = document.querySelectorAll('.js-operators');
-    this.numbers = document.querySelector('.js-numbers');
+    this.numbers = document.querySelectorAll('.js-numbers');
     this.display = document.querySelector('.js-display');
   }
 
@@ -24,7 +24,9 @@ class View {
   }
 
   bindHandleNumbers(handle) {
-    this.numbers.addEventListener('click', handle);
+    this.numbers.forEach((number) => {
+      number.addEventListener('click', handle);
+    });
   }
 
   updateDisplay(value) {
