@@ -94,6 +94,11 @@ function makeInt(value) {
 
 function handleClick(e) {
   const { value } = e.target;
+
+  if (value === 'operate' && !data.x) {
+    return;
+  }
+
   if (checkIsInt(value)) {
     data.storeNum(value);
 
