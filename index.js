@@ -14,7 +14,7 @@ const calculator = {
     return x / y;
   },
   operate: function (x, y, op) {
-    return this[op](x, y);
+    return this[op](x, y).toFixed(2);
   },
 };
 
