@@ -99,6 +99,10 @@ body {
   font-weight: bold;
 }
 
+.btn-zero {
+  min-width: 66.67%;
+}
+
 .operators__btn {
   border-right: none;
   background-color: orange;

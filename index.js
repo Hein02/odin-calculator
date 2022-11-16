@@ -7,6 +7,7 @@ class View {
     this.operators = document.querySelectorAll('.js-operators');
     this.numbers = document.querySelectorAll('.js-numbers');
     this.display = document.querySelector('.js-display');
+    this.point = document.querySelector('.js-point');
   }
 
   bindHandleClear(handle) {
@@ -29,6 +30,10 @@ class View {
     });
   }
 
+  bindHandlePoint(handle) {
+    this.point.addEventListener('click', handle);
+  }
+
   updateDisplay(value) {
     this.display.textContent = value;
   }
@@ -47,6 +52,7 @@ class Controller {
     this.view.bindHandleCalculate(this.handleCalculate);
     this.view.bindHandleOperators(this.handleOperators);
     this.view.bindHandleNumbers(this.handleNumbers);
+    this.view.bindHandlePoint(this.handlePoint);
   }
 
   handleClear = () => {
@@ -59,8 +65,8 @@ class Controller {
     if (!x || !y || !operator) {
       return;
     }
-    x = this.makeInt(x);
-    y = this.makeInt(y);
+    x = this.makeFloat(x);
+    y = this.makeFloat(y);
     const result = this.model.calculate(x, y, operator);
 
     this.model.clear('x', 'y', 'operator');
@@ -91,11 +97,34 @@ class Controller {
     const { value } = e.target;
     if (!this.model.operator) {
       this.model.store('x', value);
+      this.model.store('displayValue', this.model.x);
     } else {
       this.model.store('y', value);
+      this.model.store('displayValue', this.model.y);
     }
 
-    this.model.store('displayValue', this.model.x);
+    this.onDisplayValueChanged();
+    console.table(this.model);
+  };
+
+  handlePoint = (e) => {
+    let { value } = e.target;
+    const { x, y } = this.model;
+    if (!this.model.operator) {
+      if (x.includes(value)) {
+        return;
+      } else {
+        this.model.store('x', value);
+        this.model.store('displayValue', this.model.x);
+      }
+    } else {
+      if (y.includes(value)) {
+        return;
+      } else {
+        this.model.store('y', value);
+        this.model.store('displayValue', this.model.y);
+      }
+    }
 
     this.onDisplayValueChanged();
     console.table(this.model);
@@ -109,8 +138,8 @@ class Controller {
     return Number.isInteger(parseInt(value));
   }
 
-  makeInt(value) {
-    return parseInt(value);
+  makeFloat(value) {
+    return parseFloat(value);
   }
 }
 
