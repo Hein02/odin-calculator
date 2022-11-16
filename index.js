@@ -17,7 +17,12 @@ class View {
   }
 
   updateDisplay(value) {
+    if (value) value = this.separateThousands(value);
     this.display.textContent = value;
+  }
+
+  separateThousands(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 }
 

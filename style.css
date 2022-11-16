@@ -81,9 +81,6 @@ body {
   transition: 0.2s ease-in-out;
   box-shadow: -5px -5px 9px rgba(255, 255, 255, 0.45),
     5px 5px 9px rgba(94, 104, 121, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .btn:hover {
@@ -106,8 +103,3 @@ body {
   background-color: rgba(173, 225, 255, 0.5);
   color: #24a5ff;
 }
-
-/* .btn--eq {
-  background-color: rgba(25, 172, 255);
-  color: #8bceff;
-} */
