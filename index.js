@@ -26,9 +26,9 @@ class View {
       if (value.length > totalDigit) {
         this.fontSize = Math.ceil(this.fontSize / 1.2);
         this.setFontSize(this.fontSize);
-      } else {
-        this.fontSize = 64;
       }
+    } else {
+      this.fontSize = 64;
     }
     this.display.textContent = value;
   }
