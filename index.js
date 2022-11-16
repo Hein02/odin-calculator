@@ -42,9 +42,8 @@ class Controller {
     this.updateDisplay();
   };
 
-  handleCalculate = (e) => {
-    const { value } = e.target;
-    this.model.store('others', value);
+  handleCalculate = () => {
+    this.model.store('others', 'calculate');
     if (this.model.number) this.assignNumber(this.model.number);
     this.model.clear('number');
     this.calculateStoreDisplay(this.model.x, this.model.y, this.model.operator);

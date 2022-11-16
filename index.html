@@ -4,6 +4,12 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="style.css" />
     <script src="index.js" defer></script>
     <title>Odin's Calculator</title>
@@ -15,53 +21,23 @@
         <div class="display__nums js-display"></div>
       </div>
       <div class="numpad">
-        <div class="nums numpad__g-one">
-          <div class="nums__g nums__g-one">
-            <button
-              class="btn btn-zero calculator__btm-left-btn js-numbers"
-              value="0"
-            >
-              0
-            </button>
-            <button class="btn js-point" value=".">.</button>
-          </div>
-          <div class="nums__g nums__g-two">
-            <button class="btn js-numbers" value="1">1</button>
-            <button class="btn js-numbers" value="2">2</button>
-            <button class="btn js-numbers" value="3">3</button>
-          </div>
-          <div class="nums__g nums__g-three">
-            <button class="btn js-numbers" value="4">4</button>
-            <button class="btn js-numbers" value="5">5</button>
-            <button class="btn js-numbers" value="6">6</button>
-          </div>
-          <div class="nums__g nums__g-four">
-            <button class="btn js-numbers" value="7">7</button>
-            <button class="btn js-numbers" value="8">8</button>
-            <button class="btn js-numbers" value="9">9</button>
-          </div>
-        </div>
-        <div class="operators numpad__g-two">
-          <button class="btn operators__btn js-operators" value="add">+</button>
-          <button class="btn operators__btn js-operators" value="subtract">
-            -
-          </button>
-          <button class="btn operators__btn js-operators" value="multiply">
-            *
-          </button>
-          <button class="btn operators__btn js-operators" value="divide">
-            /
-          </button>
-          <button
-            class="btn operators__btn calculator__btm-right-btn js-calculate"
-            value="calculate"
-          >
-            =
-          </button>
-        </div>
-        <div class="controls numpad__g-three">
-          <button class="btn controls__btn js-clear" value="clear">C</button>
-        </div>
+        <button class="btn numpad__clear btn--misc js-clear">C</button>
+        <button class="btn btn--op js-operators" value="divide">÷</button>
+        <button class="btn btn--op js-operators" value="multiply">✕</button>
+        <button class="btn js-numbers" value="7">7</button>
+        <button class="btn js-numbers" value="8">8</button>
+        <button class="btn js-numbers" value="9">9</button>
+        <button class="btn btn--op js-operators" value="subtract">-</button>
+        <button class="btn js-numbers" value="4">4</button>
+        <button class="btn js-numbers" value="5">5</button>
+        <button class="btn js-numbers" value="6">6</button>
+        <button class="btn btn--op js-operators" value="add">+</button>
+        <button class="btn js-numbers" value="1">1</button>
+        <button class="btn js-numbers" value="2">2</button>
+        <button class="btn js-numbers" value="3">3</button>
+        <button class="btn numpad__zero js-numbers" value="0">0</button>
+        <button class="btn js-point">.</button>
+        <button class="btn btn--op numpad__eq js-calculate">=</button>
       </div>
     </main>
   </body>
