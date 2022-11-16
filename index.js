@@ -1,132 +1,152 @@
 'use strict';
 
-const calculator = {
-  add: function (x, y) {
-    return x + y;
-  },
-  substract: function (x, y) {
-    return x - y;
-  },
-  multiply: function (x, y) {
-    return x * y;
-  },
-  divide: function (x, y) {
-    return x / y;
-  },
-  operate: function (x, y, op) {
-    return this[op](x, y).toFixed(2);
-  },
-};
+class View {
+  constructor() {
+    this.clear = document.querySelector('.js-clear');
+    this.calculate = document.querySelector('.js-calculate');
+    this.operators = document.querySelector('.js-operators');
+    this.numbers = document.querySelector('.js-numbers');
+    this.display = document.querySelector('.js-display');
+  }
 
-const data = {
-  x: '',
-  y: '',
-  operator: '',
-  result: '',
-  cache: '',
-  storeCache: function (value) {
-    this.cache += value;
-  },
-  storeNum: function (num) {
-    if (!this.operator) {
-      this.x += num;
-    } else {
-      this.y += num;
+  bindHandleClear(handle) {
+    this.clear.addEventListener('click', handle);
+  }
+
+  bindHandleCalculate(handle) {
+    this.calculate.addEventListener('click', handle);
+  }
+
+  bindHandleOperators(handle) {
+    this.operators.addEventListener('click', handle);
+  }
+
+  bindHandleNumbers(handle) {
+    this.numbers.addEventListener('click', handle);
+  }
+
+  updateDisplay(value) {
+    this.display.textContent = value;
+  }
+}
+
+class Controller {
+  constructor(model, view) {
+    this.model = model;
+    this.view = view;
+
+    this.init();
+  }
+
+  init() {
+    this.view.bindHandleClear(this.handleClear);
+    this.view.bindHandleCalculate(this.handleCalculate);
+    this.view.bindHandleOperators(this.handleOperators);
+    this.view.bindHandleNumbers(this.handleNumbers);
+  }
+
+  handleClear = (e) => {
+    this.model = new Model();
+
+    this.view.updateDisplay(this.model.displayValue);
+    console.table(this.model);
+  };
+
+  handleCalculate = (e) => {
+    if (!this.model.x || !this.model.y || !this.model.operator) {
+      return;
     }
-  },
-  storeOperator: function (operator) {
-    this.operator = operator;
-  },
+    const x = this.makeInt(this.model.x);
+    const y = this.makeInt(this.model.y);
+    this.model.result = this.model.calculate(x, y, this.model.operator);
+    this.model.clear('x', 'y', 'operator');
+    this.model.storeNumber('x', this.model.result);
 
-  clear: function (...args) {
+    this.model.storeDisplayValue(this.model.result);
+    this.view.updateDisplay(this.model.displayValue);
+    console.table(this.model);
+  };
+
+  handleOperators = (e) => {
+    if (this.model.x || this.model.y || this.model.operator) {
+      this.handleCalculate();
+    } else {
+      this.model.clear('displayValue');
+      this.view.updateDisplay(this.model.displayValue);
+    }
+
+    this.model.storeOperator(e.target.value);
+
+    console.table(this.model);
+  };
+
+  handleNumbers = (e) => {
+    if (!this.model.operator) {
+      this.model.storeNumber('x', e.target.value);
+    } else {
+      this.model.storeNumber('y', e.target.value);
+    }
+
+    this.model.storeDisplayValue(this.model.x);
+    this.view.updateDisplay(this.model.displayValue);
+    console.table(this.model);
+  };
+
+  checkIsInt(value) {
+    return Number.isInteger(parseInt(value));
+  }
+
+  makeInt(value) {
+    return parseInt(value);
+  }
+}
+
+class Model {
+  constructor() {
+    this.x = '';
+    this.y = '';
+    this.operator = '';
+    this.result = '';
+    this.displayValue = '';
+  }
+
+  add(x, y) {
+    return x + y;
+  }
+
+  subtract(x, y) {
+    return x - y;
+  }
+
+  multiply(x, y) {
+    return x * y;
+  }
+
+  divide(x, y) {
+    return x / y;
+  }
+
+  calculate(x, y, operator) {
+    return this[operator](x, y).toFixed(2);
+  }
+
+  storeNumber(name, value) {
+    this[name] += value;
+  }
+
+  storeOperator(operator) {
+    this.operator = operator;
+  }
+
+  storeDisplayValue(displayValue) {
+    this.displayValue = displayValue;
+  }
+
+  clear(...args) {
     for (let i = 0; i < args.length; i += 1) {
       this[args[i]] = '';
     }
-  },
-};
-
-const view = {
-  getEl: function (selector) {
-    const el = document.querySelector(selector);
-    return el;
-  },
-
-  createEl: function (type, ...classNames) {
-    const el = document.createElement(type);
-    el.classList.add(...classNames);
-    return el;
-  },
-
-  appendEl: function (parent, child) {
-    return parent.appendEl(child);
-  },
-
-  addEvt: function (el, type, handler, ...opts) {
-    el.addEventListener(type, handler, ...opts);
-  },
-};
-
-function copyProps(to, from) {
-  for (let i in from) {
-    if (from.hasOwnProperty(i)) {
-      to[i] = from[i];
-    }
   }
 }
 
-function copyMethods(to, from) {
-  for (let i in from) {
-    if (from.hasOwnProperty(i) && typeof from[i] === 'function') {
-      to[i] = from[i];
-    }
-  }
-}
-
-copyProps(calculator, data);
-copyProps(calculator, view);
-console.log(calculator);
-function checkIsInt(value) {
-  return Number.isInteger(parseInt(value));
-}
-
-function makeInt(value) {
-  return parseInt(value);
-}
-
-function handleClick(e) {
-  const { value } = e.target;
-
-  if (checkIsInt(value)) {
-    calculator.storeNum(value);
-
-    calculator.storeCache(value);
-  } else if (value !== 'operate') {
-    calculator.storeOperator(value);
-
-    calculator.clear('cache');
-  } else {
-    if (calculator.x && calculator.y && calculator.operator) {
-      const x = makeInt(calculator.x);
-      const y = makeInt(calculator.y);
-      calculator.result = calculator.operate(x, y, calculator.operator);
-      calculator.clear('x', 'y', 'operator');
-      calculator.storeNum(calculator.result);
-    }
-  }
-
-  if (calculator.result) {
-    display.textContent = calculator.result;
-  } else {
-    display.textContent = calculator.cache;
-  }
-
-  if (value === 'clear') {
-    calculator.clear('x', 'y', 'operator', 'result');
-  }
-
-  console.table(calculator);
-}
-
-const numpad = calculator.getEl('.js-numpad');
-const display = calculator.getEl('.js-display');
-calculator.addEvt(numpad, 'click', handleClick);
+const app = new Controller(new Model(), new View());
