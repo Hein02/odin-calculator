@@ -37,13 +37,10 @@ const data = {
   storeOperator: function (operator) {
     this.operator = operator;
   },
-  clearData: function () {
-    this.x = '';
-    this.y = '';
-    this.operator = '';
-  },
-  clearCache: function () {
-    this.cache = '';
+  clear: function (...args) {
+    for (let i = 0; i < args.length; i += 1) {
+      this[args[i]] = '';
+    }
   },
 };
 
@@ -104,14 +101,14 @@ function handleClick(e) {
   } else {
     data.storeOperator(value);
 
-    data.clearCache();
+    data.clear('cache');
   }
 
   if (data.x && data.y && data.operator) {
     const x = makeInt(data.x);
     const y = makeInt(data.y);
     data.result = calculator.operate(x, y, data.operator);
-    data.clearData();
+    data.clear('x', 'y', 'operator');
     data.storeNum(data.result);
   }
 
@@ -119,6 +116,10 @@ function handleClick(e) {
     display.textContent = data.result;
   } else {
     display.textContent = data.cache;
+  }
+
+  if (value === 'clear') {
+    data.clear('x', 'y', 'operator', 'result');
   }
 
   console.table(data);
