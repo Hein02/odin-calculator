@@ -12,40 +12,43 @@
     <main class="calculator">
       <div class="display">
         <div class="display__space"></div>
-        <div class="display__nums">123</div>
+        <div class="display__nums js-display">123</div>
       </div>
-      <div class="numpad">
+      <div class="numpad js-numpad">
         <div class="nums numpad__g-one">
           <div class="nums__g nums__g-one">
-            <button class="btn calculator__btm-left-btn">0</button>
+            <button class="btn calculator__btm-left-btn" value="0">0</button>
           </div>
           <div class="nums__g nums__g-two">
-            <button class="btn">1</button>
-            <button class="btn">2</button>
-            <button class="btn">3</button>
+            <button class="btn" value="1">1</button>
+            <button class="btn" value="2">2</button>
+            <button class="btn" value="3">3</button>
           </div>
           <div class="nums__g nums__g-three">
-            <button class="btn">4</button>
-            <button class="btn">5</button>
-            <button class="btn">6</button>
+            <button class="btn" value="4">4</button>
+            <button class="btn" value="5">5</button>
+            <button class="btn" value="6">6</button>
           </div>
           <div class="nums__g nums__g-four">
-            <button class="btn">7</button>
-            <button class="btn">8</button>
-            <button class="btn">9</button>
+            <button class="btn" value="7">7</button>
+            <button class="btn" value="8">8</button>
+            <button class="btn" value="9">9</button>
           </div>
         </div>
         <div class="operators numpad__g-two">
-          <button class="btn operators__btn">+</button>
-          <button class="btn operators__btn">-</button>
-          <button class="btn operators__btn">*</button>
-          <button class="btn operators__btn">/</button>
-          <button class="btn operators__btn calculator__btm-right-btn">
+          <button class="btn operators__btn" value="add">+</button>
+          <button class="btn operators__btn" value="substract">-</button>
+          <button class="btn operators__btn" value="multiply">*</button>
+          <button class="btn operators__btn" value="divide">/</button>
+          <button
+            class="btn operators__btn calculator__btm-right-btn"
+            value="operate"
+          >
             =
           </button>
         </div>
         <div class="controls numpad__g-three">
-          <button class="btn controls__btn">C</button>
+          <button class="btn controls__btn" value="clear">C</button>
         </div>
       </div>
     </main>
