@@ -18,6 +18,10 @@ body {
   place-content: center;
 }
 
+.title {
+  color: #dde1e7;
+}
+
 .calculator {
   width: 350px;
   aspect-ratio: 3/5;
@@ -26,6 +30,11 @@ body {
   border-radius: 16px;
   margin: 16px;
   background: #dde1e7;
+}
+
+.divider {
+  width: 100%;
+  background-color: rgb(57, 57, 57);
 }
 
 .display {
@@ -41,7 +50,7 @@ body {
 .display__nums {
   text-align: right;
   padding: 0 32px;
-  font-size: 2.5rem;
+  font-size: 64px;
 }
 
 .numpad {

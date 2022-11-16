@@ -8,6 +8,7 @@ class View {
     this.numbers = document.querySelectorAll('.js-numbers');
     this.display = document.querySelector('.js-display');
     this.point = document.querySelector('.js-point');
+    this.fontSize = 64;
   }
 
   bindHandle(node, handle) {
@@ -17,12 +18,27 @@ class View {
   }
 
   updateDisplay(value) {
-    if (value) value = this.separateThousands(value);
+    const displayWidth = 384;
+    const totalDigit = Math.ceil((displayWidth * 1.2) / this.fontSize);
+
+    if (value) {
+      value = this.separateThousands(value);
+      if (value.length > totalDigit) {
+        this.fontSize = Math.ceil(this.fontSize / 1.2);
+        this.setFontSize(this.fontSize);
+      } else {
+        this.fontSize = 64;
+      }
+    }
     this.display.textContent = value;
   }
 
   separateThousands(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  }
+
+  setFontSize(fontSize) {
+    this.display.style.fontSize = `${fontSize}px`;
   }
 }
 
