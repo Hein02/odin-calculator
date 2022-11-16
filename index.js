@@ -18,13 +18,15 @@ const calculator = {
   },
 };
 
-console.log(calculator.operate(2, 2, 'add'));
-
 const data = {
   x: '',
   y: '',
   operator: '',
   result: '',
+  cache: '',
+  storeCache: function (value) {
+    this.cache += value;
+  },
   storeNum: function (num) {
     if (!this.operator) {
       this.x += num;
@@ -39,6 +41,9 @@ const data = {
     this.x = '';
     this.y = '';
     this.operator = '';
+  },
+  clearCache: function () {
+    this.cache = '';
   },
 };
 
@@ -63,15 +68,24 @@ const view = {
   },
 };
 
-function makeView(o) {
-  for (let i in view) {
-    if (view.hasOwnProperty(i) && typeof view[i] === 'function') {
-      o[i] = view[i];
+function copyProps(to, from) {
+  for (let i in from) {
+    if (from.hasOwnProperty(i)) {
+      to[i] = from[i];
     }
   }
 }
 
-makeView(calculator);
+function copyMethods(to, from) {
+  for (let i in from) {
+    if (from.hasOwnProperty(i) && typeof from[i] === 'function') {
+      to[i] = from[i];
+    }
+  }
+}
+
+copyProps(calculator, data);
+copyProps(calculator, view);
 
 function checkIsInt(value) {
   return Number.isInteger(parseInt(value));
@@ -83,11 +97,14 @@ function makeInt(value) {
 
 function handleClick(e) {
   const { value } = e.target;
-
   if (checkIsInt(value)) {
     data.storeNum(value);
+
+    data.storeCache(value);
   } else {
     data.storeOperator(value);
+
+    data.clearCache();
   }
 
   if (data.x && data.y && data.operator) {
@@ -96,6 +113,12 @@ function handleClick(e) {
     data.result = calculator.operate(x, y, data.operator);
     data.clearData();
     data.storeNum(data.result);
+  }
+
+  if (data.result) {
+    display.textContent = data.result;
+  } else {
+    display.textContent = data.cache;
   }
 
   console.table(data);
