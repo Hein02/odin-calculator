@@ -37,6 +37,7 @@ const data = {
   storeOperator: function (operator) {
     this.operator = operator;
   },
+
   clear: function (...args) {
     for (let i = 0; i < args.length; i += 1) {
       this[args[i]] = '';
@@ -95,39 +96,35 @@ function makeInt(value) {
 function handleClick(e) {
   const { value } = e.target;
 
-  if (value === 'operate' && !data.x) {
-    return;
-  }
-
   if (checkIsInt(value)) {
-    data.storeNum(value);
+    calculator.storeNum(value);
 
-    data.storeCache(value);
-  } else {
-    data.storeOperator(value);
+    calculator.storeCache(value);
+  } else if (value !== 'operate') {
+    calculator.storeOperator(value);
 
-    data.clear('cache');
+    calculator.clear('cache');
   }
 
-  if (data.x && data.y && data.operator) {
-    const x = makeInt(data.x);
-    const y = makeInt(data.y);
-    data.result = calculator.operate(x, y, data.operator);
-    data.clear('x', 'y', 'operator');
-    data.storeNum(data.result);
+  if (calculator.x && calculator.y && calculator.operator) {
+    const x = makeInt(calculator.x);
+    const y = makeInt(calculator.y);
+    calculator.result = calculator.operate(x, y, calculator.operator);
+    calculator.clear('x', 'y', 'operator');
+    calculator.storeNum(calculator.result);
   }
 
-  if (data.result) {
-    display.textContent = data.result;
+  if (calculator.result) {
+    display.textContent = calculator.result;
   } else {
-    display.textContent = data.cache;
+    display.textContent = calculator.cache;
   }
 
   if (value === 'clear') {
-    data.clear('x', 'y', 'operator', 'result');
+    calculator.clear('x', 'y', 'operator', 'result');
   }
 
-  console.table(data);
+  console.table(calculator);
 }
 
 const numpad = calculator.getEl('.js-numpad');
