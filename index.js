@@ -4,7 +4,7 @@ class View {
   constructor() {
     this.clear = document.querySelector('.js-clear');
     this.calculate = document.querySelector('.js-calculate');
-    this.operators = document.querySelector('.js-operators');
+    this.operators = document.querySelectorAll('.js-operators');
     this.numbers = document.querySelector('.js-numbers');
     this.display = document.querySelector('.js-display');
   }
@@ -18,7 +18,9 @@ class View {
   }
 
   bindHandleOperators(handle) {
-    this.operators.addEventListener('click', handle);
+    this.operators.forEach((operator) => {
+      operator.addEventListener('click', handle);
+    });
   }
 
   bindHandleNumbers(handle) {
