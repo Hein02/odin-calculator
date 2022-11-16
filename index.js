@@ -11,35 +11,9 @@ class View {
   }
 
   bindHandle(node, handle) {
-    if (this[node].length) {
+    if (this[node].length)
       this[node].forEach((el) => el.addEventListener('click', handle));
-    } else {
-      this[node].addEventListener('click', handle);
-    }
-  }
-
-  bindHandleClear(handle) {
-    this.clear.addEventListener('click', handle);
-  }
-
-  bindHandleCalculate(handle) {
-    this.calculate.addEventListener('click', handle);
-  }
-
-  bindHandleOperators(handle) {
-    this.operators.forEach((operator) => {
-      operator.addEventListener('click', handle);
-    });
-  }
-
-  bindHandleNumbers(handle) {
-    this.numbers.forEach((number) => {
-      number.addEventListener('click', handle);
-    });
-  }
-
-  bindHandlePoint(handle) {
-    this.point.addEventListener('click', handle);
+    else this[node].addEventListener('click', handle);
   }
 
   updateDisplay(value) {
@@ -71,12 +45,9 @@ class Controller {
   handleCalculate = (e) => {
     const { value } = e.target;
     this.model.store('others', value);
-    if (this.model.number) {
-      this.assignNumber(this.model.number);
-      this.model.clear('number');
-    }
+    if (this.model.number) this.assignNumber(this.model.number);
+    this.model.clear('number');
     this.calculateStoreDisplay(this.model.x, this.model.y, this.model.operator);
-    console.table(this.model);
   };
 
   handleOperators = (e) => {
@@ -86,33 +57,25 @@ class Controller {
     if (this.model.others === 'calculate' && this.model.number) {
       this.model.store('x', this.model.number);
       this.model.clear('y', 'others');
-    } else {
-      this.assignNumber(this.model.number);
-    }
+    } else this.assignNumber(this.model.number);
     this.updateDisplay(this.model.number);
     this.model.clear('number');
     // If a calculation can be done, do it first before storing the 'operator'
     this.calculateStoreDisplay(this.model.x, this.model.y, this.model.operator);
     this.model.store('operator', value);
-    console.table(this.model);
   };
 
   handleNumbers = (e) => {
     const { value } = e.target;
     this.model.store('number', value);
     this.updateDisplay(this.model.number);
-    console.table(this.model);
   };
 
   handlePoint = () => {
     if (this.model.number.includes('.')) return;
-    if (!this.model.number) {
-      this.model.store('number', '0.');
-    } else {
-      this.model.store('number', '.');
-    }
+    if (!this.model.number) this.model.store('number', '0.');
+    else this.model.store('number', '.');
     this.updateDisplay(this.model.number);
-    console.table(this.model);
   };
 
   calculateStoreDisplay(x, y, operator) {
@@ -129,11 +92,8 @@ class Controller {
 
   // Store 'number' in an available operand
   assignNumber(number) {
-    if (!this.model.x) {
-      this.model.store('x', number);
-    } else {
-      this.model.store('y', number);
-    }
+    if (!this.model.x) this.model.store('x', number);
+    else this.model.store('y', number);
   }
 
   checkIsInt(value) {
