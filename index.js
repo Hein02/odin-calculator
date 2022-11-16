@@ -10,6 +10,14 @@ class View {
     this.point = document.querySelector('.js-point');
   }
 
+  bindHandle(node, handle) {
+    if (this[node].length) {
+      this[node].forEach((el) => el.addEventListener('click', handle));
+    } else {
+      this[node].addEventListener('click', handle);
+    }
+  }
+
   bindHandleClear(handle) {
     this.clear.addEventListener('click', handle);
   }
@@ -48,102 +56,88 @@ class Controller {
   }
 
   init() {
-    this.view.bindHandleClear(this.handleClear);
-    this.view.bindHandleCalculate(this.handleCalculate);
-    this.view.bindHandleOperators(this.handleOperators);
-    this.view.bindHandleNumbers(this.handleNumbers);
-    this.view.bindHandlePoint(this.handlePoint);
+    this.view.bindHandle('clear', this.handleClear);
+    this.view.bindHandle('calculate', this.handleCalculate);
+    this.view.bindHandle('operators', this.handleOperators);
+    this.view.bindHandle('numbers', this.handleNumbers);
+    this.view.bindHandle('point', this.handlePoint);
   }
 
   handleClear = () => {
     this.model = new Model();
-    this.onDisplayValueChanged();
+    this.updateDisplay();
   };
 
-  handleCalculate = () => {
-    let { x, y, operator } = this.model;
-    if (!x || !y || !operator) {
-      return;
+  handleCalculate = (e) => {
+    const { value } = e.target;
+    this.model.store('others', value);
+    if (this.model.number) {
+      this.assignNumber(this.model.number);
+      this.model.clear('number');
     }
-    x = this.makeFloat(x);
-    y = this.makeFloat(y);
-    const result = this.model.calculate(x, y, operator);
-
-    this.model.clear('x', 'y', 'operator');
-    this.model.store('x', result);
-    this.model.store('result', result);
-
-    this.model.store('displayValue', this.model.x);
-    this.onDisplayValueChanged();
-
+    this.calculateStoreDisplay(this.model.x, this.model.y, this.model.operator);
     console.table(this.model);
   };
 
   handleOperators = (e) => {
     const { value } = e.target;
-    let { x, y, operator } = this.model;
-    if (x || y || operator) {
-      this.handleCalculate();
+    // If user presses on a number and '=' is used for previous calculation,
+    // start a new calculation by storing the number in 'x'
+    if (this.model.others === 'calculate' && this.model.number) {
+      this.model.store('x', this.model.number);
+      this.model.clear('y', 'others');
     } else {
-      this.model.clear('displayValue');
-      this.onDisplayValueChanged();
+      this.assignNumber(this.model.number);
     }
-
+    this.updateDisplay(this.model.number);
+    this.model.clear('number');
+    // If a calculation can be done, do it first before storing the 'operator'
+    this.calculateStoreDisplay(this.model.x, this.model.y, this.model.operator);
     this.model.store('operator', value);
-
     console.table(this.model);
   };
 
   handleNumbers = (e) => {
     const { value } = e.target;
-    if (!this.model.operator) {
-      if (this.model.result) {
-        this.model.clear('x', 'result');
-      }
-      this.model.store('x', value);
-      this.model.store('displayValue', this.model.x);
-    } else {
-      this.model.store('y', value);
-      this.model.store('displayValue', this.model.y);
-    }
-
-    this.onDisplayValueChanged();
+    this.model.store('number', value);
+    this.updateDisplay(this.model.number);
     console.table(this.model);
   };
 
-  handlePoint = (e) => {
-    let { value } = e.target;
-    const { x, y } = this.model;
-    if (!this.model.operator) {
-      if (x.includes(value)) {
-        return;
-      } else {
-        this.model.store('x', value);
-        this.model.store('displayValue', this.model.x);
-      }
+  handlePoint = () => {
+    if (this.model.number.includes('.')) return;
+    if (!this.model.number) {
+      this.model.store('number', '0.');
     } else {
-      if (y.includes(value)) {
-        return;
-      } else {
-        this.model.store('y', value);
-        this.model.store('displayValue', this.model.y);
-      }
+      this.model.store('number', '.');
     }
-
-    this.onDisplayValueChanged();
+    this.updateDisplay(this.model.number);
     console.table(this.model);
   };
 
-  onDisplayValueChanged() {
+  calculateStoreDisplay(x, y, operator) {
+    if (!x || !y || !operator) return;
+    const result = this.model.calculate(x, y, operator);
+    this.model.store('x', result);
+    this.updateDisplay(result);
+  }
+
+  updateDisplay(displayValue) {
+    this.model.store('displayValue', displayValue);
     this.view.updateDisplay(this.model.displayValue);
+  }
+
+  // Store 'number' in an available operand
+  assignNumber(number) {
+    if (!this.model.x) {
+      this.model.store('x', number);
+    } else {
+      this.model.store('y', number);
+    }
   }
 
   checkIsInt(value) {
     return Number.isInteger(parseInt(value));
-  }
-
-  makeFloat(value) {
-    return parseFloat(value);
   }
 }
 
@@ -152,7 +146,8 @@ class Model {
     this.x = '';
     this.y = '';
     this.operator = '';
-    this.result = '';
+    this.number = '';
+    this.others = '';
     this.displayValue = '';
   }
 
@@ -173,11 +168,13 @@ class Model {
   }
 
   calculate(x, y, operator) {
+    x = this.makeFloat(x);
+    y = this.makeFloat(y);
     return this[operator](x, y).toFixed(2);
   }
 
   store(key, value) {
-    if (key === 'x' || key === 'y') {
+    if (key === 'number') {
       this[key] += value;
     } else {
       this[key] = value;
@@ -188,6 +185,10 @@ class Model {
     for (let i = 0; i < args.length; i += 1) {
       this[args[i]] = '';
     }
+  }
+
+  makeFloat(value) {
+    return parseFloat(value);
   }
 }
 
